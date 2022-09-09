@@ -54,27 +54,27 @@ tracee events while calling the `resume()` or `resume_and_wait()` functions.
 
 For example, the following is one of the simplest conceivable tracer programs.
 
-  #include <iostream>
-  #include "tracer.hpp"
+    #include <iostream>
+    #include "tracer.hpp"
 
-  tracer the_tracer;
+    tracer the_tracer;
 
-  int main(int argc, char **argv) {
-    if(the_tracer.fork() == 0) {
-      std::cout << "Hello, World!";
-    } else {
-      while(the_tracer.resume_and_wait(stop_reason::SYSCALL_ENTRY)) {
-        std::cout << the_tracer.get_syscall_name() << "\n";
+    int main(int argc, char **argv) {
+      if(the_tracer.fork() == 0) {
+        std::cout << "Hello, World!";
+      } else {
+        while(the_tracer.resume_and_wait(stop_reason::SYSCALL_ENTRY)) {
+          std::cout << the_tracer.get_syscall_name() << "\n";
+        }
       }
     }
-  }
 
 This will print something like:
 
-  fstat
-  write
-  Hello, World!
-  exit_group 
+    fstat
+    write
+    Hello, World!
+    exit_group 
 
 To stop at every signal instead, use `stop_reason::SIGNALED` as the argument
 to `resume_and_wait()`. These calls may throw a `tracer_exception`, that you
