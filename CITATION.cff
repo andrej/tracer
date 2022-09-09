@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "Please consider citing this library if it contributed to your research."
+authors:
+ - family-names: Rösti
+   given-names: André
+title: "libtracer -- a Lightweight Idiomatic C++ Wrapper Around Linux ptrace"
+version: 1.0.0
+date-released: 2022-09-01
