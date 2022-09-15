@@ -14,6 +14,8 @@ ARCH_SRC_DIR := $(TRACER_DIR)/src/$(ARCH)
 GENERIC_SRCS := $(shell find $(GENERIC_SRC_DIR) -name \*.cpp)
 ARCH_SRCS := $(shell find $(ARCH_SRC_DIR) -name \*.cpp)
 SYSCALL_NAME_TABLE_SRC := $(SRC_DIR)/generated/syscall_names_table.cpp
+ALL_SRCS := $(GENERIC_SRCS) $(ARCH_SRCS) $(SYSCALL_NAME_TABLE_SRC)
+DEPENDENCIES := $(ALL_SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.d)
 
 GENERIC_OBJS := $(GENERIC_SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 ARCH_OBJS := $(ARCH_SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
@@ -32,7 +34,7 @@ $(SYSCALL_NAME_TABLE_SRC):
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $(@D)
-	$(CXX) -c $(CXXFLAGS) -o $@ $^
+	$(CXX) -MMD -c $(CXXFLAGS) -o $@ $<
 
 $(LIB_DIR)/libtracer.so: $(GENERIC_OBJS) $(ARCH_OBJS) $(SYSCALL_NAME_TABLE_OBJ)
 	mkdir -p $(@D)
@@ -46,3 +48,5 @@ examples:
 clean:
 	rm $(SYSCALL_NAME_TABLE_SRC)
 	rm -r $(BUILD_DIR) $(INSTALL_DIR) || true
+
+-include $(DEPENDENCIES)
